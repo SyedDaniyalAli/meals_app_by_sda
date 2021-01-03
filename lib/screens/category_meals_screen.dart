@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:meals_app_by_sda/data/dummy_data.dart';
-import 'package:meals_app_by_sda/models/meal.dart';
-import 'package:meals_app_by_sda/widgets/meal_item.dart';
+import '../models/meal.dart';
+import '../widgets/meal_item.dart';
 
 class CategoryMealsScreen extends StatefulWidget {
   static const routeName = './category-meals';
+
+  final List<Meal> availableMeals;
+
+  const CategoryMealsScreen({this.availableMeals});
 
   @override
   _CategoryMealsScreenState createState() => _CategoryMealsScreenState();
@@ -13,7 +16,7 @@ class CategoryMealsScreen extends StatefulWidget {
 class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
   String categoryTitle;
   List<Meal> displayedMeals;
-  var _isDataLoaded=false;
+  var _isDataLoaded = false;
 
   @override
   void initState() {
@@ -23,19 +26,16 @@ class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
 
   @override
   void didChangeDependencies() {
-
-    if(!_isDataLoaded)
-      {
-        final routeArgs =
-        ModalRoute.of(context).settings.arguments as Map<String, String>;
-        final categoryId = routeArgs['id'];
-        categoryTitle = routeArgs['title'];
-        displayedMeals = DUMMY_MEALS
-            .where((meals) => meals.categories.contains(categoryId))
-            .toList();
-        _isDataLoaded=true;
-      }
-
+    if (!_isDataLoaded) {
+      final routeArgs =
+          ModalRoute.of(context).settings.arguments as Map<String, String>;
+      final categoryId = routeArgs['id'];
+      categoryTitle = routeArgs['title'];
+      displayedMeals = widget.availableMeals
+          .where((meals) => meals.categories.contains(categoryId))
+          .toList();
+      _isDataLoaded = true;
+    }
 
     super.didChangeDependencies();
   }
