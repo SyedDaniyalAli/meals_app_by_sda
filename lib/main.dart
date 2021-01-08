@@ -23,6 +23,7 @@ class _MyAppState extends State<MyApp> {
   };
 
   List<Meal> _availableMeals = DUMMY_MEALS;
+  List<Meal> _favoritesMeals = [];
 
   void _setFilters(Map<String, bool> filterData) {
     _filters = filterData;
@@ -41,6 +42,21 @@ class _MyAppState extends State<MyApp> {
       }
       return true;
     }).toList();
+  }
+
+  void _toggleFavorites(String mealId) {
+    final existingIndex =
+        _favoritesMeals.indexWhere((meal) => meal.id == mealId);
+    if (existingIndex >= 0) {
+      setState(() {
+        _favoritesMeals.removeAt(existingIndex);
+      });
+    } else {
+      setState(() {
+        _favoritesMeals
+            .add(DUMMY_MEALS.firstWhere((meal) => mealId == meal.id));
+      });
+    }
   }
 
   @override
@@ -63,11 +79,11 @@ class _MyAppState extends State<MyApp> {
       // home: CategoriesScreen(),
       initialRoute: '/',
       routes: {
-        '/': (ctx) => TabsScreen(),
+        '/': (ctx) => TabsScreen(_favoritesMeals),
         CategoryMealsScreen.routeName: (ctx) =>
             CategoryMealsScreen(availableMeals: _availableMeals),
         MealDetail.routeName: (ctx) => MealDetail(),
-        FiltersScreen.routeName: (ctx) => FiltersScreen(_filters,_setFilters),
+        FiltersScreen.routeName: (ctx) => FiltersScreen(_filters, _setFilters),
       },
       // onGenerateRoute: (settings) {
       //   print(settings.arguments);
@@ -80,22 +96,3 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-
-// class MyHomePage extends StatefulWidget {
-//   @override
-//   _MyHomePageState createState() => _MyHomePageState();
-// }
-//
-// class _MyHomePageState extends State<MyHomePage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('SDA Meals'),
-//       ),
-//       body: Center(
-//         child: Text('Navigation Time'),
-//       ),
-//     );
-//   }
-// }
